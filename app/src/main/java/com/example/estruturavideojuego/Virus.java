@@ -11,6 +11,7 @@ public class Virus {
     Bitmap virus;
     public static float xVirus, yVirus;
     private Juego j;
+    Random aleatorio = new Random();
 
 
     public Virus(Juego juego){
@@ -21,12 +22,11 @@ public class Virus {
 
 
     public void posicionVirus(){
-        Random aleatorio = new Random();
         xVirus = aleatorio.nextInt(j.AnchoPantalla/2);
         yVirus = aleatorio.nextInt(j.AltoPantalla/2);
     }
 
-    public void pintarVirus(Canvas canvas, Paint paint, float posX, float posY){
+    public void pintarVirus(Canvas canvas, Paint paint){
 
         //En coordenadas le pongo entre 1.5 para adecuar
       /*  canvas.drawBitmap(j.virus, new Rect((int) puntero_misil, 0, (int) (puntero_misil + j.misilEnemigo.getWidth()/9), j.misilEnemigo.getHeight()),
@@ -35,7 +35,7 @@ public class Virus {
         Log.d("MISIL: ", " Y Mi Misil: " + coordenadaYMisil +
                 " X mi  misil: " + coordenadaMisil + " velocidad mi misil: " + velocidadMisil);
 */
-        canvas.drawBitmap(j.virus, posX,posY,paint);
+        canvas.drawBitmap(j.virus, aleatorio.nextInt(j.AnchoPantalla),aleatorio.nextInt(j.AltoPantalla),paint);
 
 
     }

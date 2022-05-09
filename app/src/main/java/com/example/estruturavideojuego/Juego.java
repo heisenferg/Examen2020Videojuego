@@ -40,9 +40,10 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
 
 
         dimesionesPantalla();
+        pintarVirus();
+
         cargarVirus();
 
-        pintarVirus();
 
     }
 
@@ -98,7 +99,7 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void actualizar() {
 
-        numeroVirus = MainActivity.aleatorio-virusMatados;
+       // numeroVirus = MainActivity.aleatorio-virusMatados;
 
         // Poner virus
 
@@ -123,7 +124,7 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
 
         // Dibujamos los enemigos
         for(Virus vi: virusArrayList){
-            vi.pintarVirus(canvas,p, vi.xVirus, vi.yVirus);
+            vi.pintarVirus(canvas,p);
             Log.d("Pintado", " virus: "+ virusArrayList.size() + " xVirus: " + vi.xVirus);
         }
         /*for (int i = 0; i<=virusArrayList.size(); i++){
@@ -131,11 +132,8 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
             virus.pintarVirus(canvas,p);
         }*/
     }
-    public void posicionVirus(){
-        Random aleatorio = new Random();
-        xVirus = aleatorio.nextInt(AnchoPantalla/2);
-        yVirus = aleatorio.nextInt(AltoPantalla/2);
-    }
+
+
 
     public void pintarVirus(){
         Log.d("Numero", " de virus: " + numeroVirus);
