@@ -24,7 +24,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static int aleatorio;
+    public static int aleatorio=0;
     TextView textoVirus;
     String url;
     ImageView imagenVirus;
@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textoVirus = findViewById(R.id.losVirus);
         Random random = new Random();
-        aleatorio = random.nextInt(5);
+        while(aleatorio==0){
+            aleatorio = random.nextInt(5);
+        }
         url = "https://fp.cloud.riberadeltajo.es/mensaje"+aleatorio+".txt";
         Log.d("ERROR: ", " url= " + url);
 cargar();

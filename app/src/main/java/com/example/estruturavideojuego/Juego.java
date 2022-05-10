@@ -10,13 +10,15 @@ import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Juego extends SurfaceView implements SurfaceHolder.Callback {
+public class Juego extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener  {
 
     private SurfaceHolder holder;
     private BucleJuego bucle;
@@ -28,8 +30,11 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
     public float xVirus,yVirus;
     Random aleatorio = new Random();
     private ArrayList<Virus> virusArrayList = new ArrayList<Virus>();
-
+    private Virus viruses;
+    float px,py;
     private static final String TAG = Juego.class.getSimpleName();
+    public boolean hayToque=false;
+    private ArrayList<Toque> toques = new ArrayList<Toque>();
 
     public Juego(Activity context) {
         super(context);
@@ -40,9 +45,15 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
 
 
         dimesionesPantalla();
-        pintarVirus();
+
 
         cargarVirus();
+
+        for(int i =0; i<4; i++){
+           pintarVirus();
+        }
+
+
 
 
     }
@@ -50,6 +61,7 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
     public void cargarVirus(){
         virus = BitmapFactory.decodeResource(getResources(), R.drawable.virusillo);
         virus.createScaledBitmap(virus, 80, 80, false);
+
     }
 
     public void dimesionesPantalla(){
@@ -99,7 +111,7 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void actualizar() {
 
-       // numeroVirus = MainActivity.aleatorio-virusMatados;
+        numeroVirus = MainActivity.aleatorio-virusMatados;
 
         // Poner virus
 
@@ -120,30 +132,35 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
         p.setTextSize(50);
         canvas.drawText("MATA AL VIRUS", 100, 150, p);
         canvas.drawText("Virus restantes: " + numeroVirus, 100, AltoPantalla-250,p );
-        //canvas.drawText("Frame "+bucle.iteraciones+";"+"Tiempo "+bucle.tiempoTotal,150,150,p);
+        canvas.drawText("Frame "+bucle.iteraciones+";"+"Tiempo "+bucle.tiempoTotal,150,150,p);
+
+
 
         // Dibujamos los enemigos
-        for(Virus vi: virusArrayList){
-            vi.pintarVirus(canvas,p);
-            Log.d("Pintado", " virus: "+ virusArrayList.size() + " xVirus: " + vi.xVirus);
+       for(int i =0; i<numeroVirus; i++){
+         //   vi.pintarVirus(canvas);
+          //  Log.d("Pintado", " virus: "+ virusArrayList.size() + " xVirus: " + vi.xVirus);
+           virusArrayList.get(i).pintarVirus(canvas);
+           Log.d("Ñ: ", " x: " + virusArrayList.get(i).xVirus + " y= " + virusArrayList.get(i).yVirus);
         }
-        /*for (int i = 0; i<=virusArrayList.size(); i++){
-            Virus virus=new Virus(this);
-            virus.pintarVirus(canvas,p);
-        }*/
-    }
 
+
+    }
 
 
     public void pintarVirus(){
-        Log.d("Numero", " de virus: " + numeroVirus);
-        for (int i = 0; i<numeroVirus; i++){
-            Log.d("xVirus: " , xVirus + " yVirus: " + yVirus);
-            Virus viruses = new Virus(this);
-            virusArrayList.add(viruses);
-        }
+        for (int i =0;i<numeroVirus;i++) {
 
+            Log.d("xVirus: ", xVirus + " yVirus: " + yVirus);
+            xVirus = aleatorio.nextInt(AnchoPantalla);
+            yVirus = aleatorio.nextInt(AltoPantalla);
+            Log.d("Numero ", +i+ " de virus: " + numeroVirus+"xVirus: " +xVirus + " yVirus: " + yVirus);
+            Virus v = new Virus(this, xVirus, yVirus);
+            virusArrayList.add(v);
+            Log.d("Array: ", "tamaño " + virusArrayList.size());
+        }
     }
+
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -160,5 +177,55 @@ public class Juego extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int index;
+        int x,y;
+
+        // Obtener el pointer asociado con la acción
+        index = event.getActionIndex();
+
+
+        x = (int) event.getX(index);
+        y = (int) event.getY(index);
+
+        switch(event.getActionMasked()){
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                hayToque=true;
+
+                synchronized(this) {
+                    toques.add(index, new Toque(index, x, y));
+                }
+
+                //se comprueba si se ha pulsado
+                for(int i=0;i<4;i++)
+                   // controles[i].comprueba_Pulsado(x,y);
+                break;
+
+            case MotionEvent.ACTION_POINTER_UP:
+                synchronized(this) {
+                    toques.remove(index);
+                }
+
+                //se comprueba si se ha soltado el botón
+                for(int i=0;i<4;i++)
+                   // controles[i].compruebaSoltado(toques);
+                break;
+
+            case MotionEvent.ACTION_UP:
+                synchronized(this) {
+                    toques.clear();
+
+                }
+                hayToque=false;
+                //se comprueba si se ha soltado el botón
+                for(int i=0;i<4;i++)
+                  //  controles[i].compruebaSoltado(toques);
+                break;
+        }
+
+        return true;
+    }
 
 }
