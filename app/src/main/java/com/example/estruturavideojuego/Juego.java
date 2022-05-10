@@ -110,7 +110,11 @@ Log.d("Numero de virus: " , " son " + numeroVirus);
                 if (touchX>=vi.coordenada_x && touchX<=vi.coordenada_x+virus.getWidth()
                 && touchY>=vi.coordenada_y && touchY<=vi.coordenada_y+virus.getHeight()){
                     virusMatados++;
-                    virusArrayList.remove(vi);
+                   try{
+                       virusArrayList.remove(vi);
+                   } catch (Exception e){
+                       Log.d("Exception", " Excepci´pon borrado");
+                   }
                 }
             }
         }
@@ -188,6 +192,9 @@ Log.d("Numero de virus: " , " son " + numeroVirus);
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
+        // Obtener el pointer asociado con la acción
+        index = event.getActionIndex();
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
