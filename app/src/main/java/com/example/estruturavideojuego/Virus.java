@@ -9,42 +9,42 @@ import android.util.Log;
 import java.util.Random;
 
 public class Virus {
-    Bitmap virus;
-    public static float xVirus, yVirus;
-    private Juego j;
-    Random aleatorio = new Random();
+    public float velocidad_Enemigo;
+    public float coordenada_x, coordenada_y;
 
-    public static float getxVirus() {
-        return xVirus;
+    private Juego juego;
+
+    public Virus(Juego j) {
+        Random randon = new Random();
+        juego = j;
+
+        coordenada_y = randon.nextInt(580);
+        coordenada_x = randon.nextInt(190);
+        velocidad_Enemigo = j.maxX / 5f / BucleJuego.MAX_FPS;
     }
 
-    public static void setxVirus(float xVirus) {
-        Virus.xVirus = xVirus;
+    public void pintarVirus(Canvas c, Paint paint) {
+        c.drawBitmap(juego.virus, coordenada_x, coordenada_y, paint);
     }
 
-    public static float getyVirus() {
-        return yVirus;
+    public void actualizarPoscicion() {
+        if(coordenada_x > juego.maxX || coordenada_x < 0 ){
+            velocidad_Enemigo *=-1;
+        }else if(coordenada_y > juego.maxY){
+            velocidad_Enemigo *=-1;
+        }
+        coordenada_x += velocidad_Enemigo;
+        coordenada_y += velocidad_Enemigo;
+
+
+
+
     }
-
-    public static void setyVirus(float yVirus) {
-        Virus.yVirus = yVirus;
+    public int Alto () {
+        return juego.virus.getHeight();
     }
-
-    public Virus(Juego juego, float pX, float pY){
-        j = juego;
-       // posicionVirus();
-        xVirus=pX;
-        yVirus=pY;
-        Log.d("Posicion", " de virus: X="+ xVirus + " y: " + yVirus);
+    public int Ancho () {
+        return juego.virus.getWidth();
     }
-
-
-    public void pintarVirus(Canvas canvas){
-      //  canvas.drawBitmap(j.virus, aleatorio.nextInt(j.AnchoPantalla),aleatorio.nextInt(j.AltoPantalla),paint);
-        canvas.drawBitmap(j.virus, xVirus,yVirus,null);
-        Log.d("Posiciones: ", " xVirus= "+ xVirus + " yVirus= " + yVirus);
-    }
-
-
 
 }
